@@ -14,8 +14,9 @@ var input = [
              ,{id : 4, start : 610, end : 670}
             ];
 
-var WIDTH       = 600
-   ,EVENT_CLASS = 'event';
+var WIDTH     = 600
+   ,EVENT     = 'event'
+   ,CONTAINER = 'container';
 
 /**
 Lays out events for a single  day
@@ -82,7 +83,7 @@ function sweepAndAssign(myEvents, timeline) {
 
 function addThingsToDom() {
   var realEvents = layOutDay(input)
-     ,container = document.getElementById('container');
+     ,container = document.getElementById(CONTAINER);
 
   for (var i = 0; i < realEvents.length; ++i) {
     var myEvent   = document.createElement('div')
@@ -92,7 +93,7 @@ function addThingsToDom() {
     myEvent.style.top    = realEvent.top  + 'px';
     myEvent.style.left   = realEvent.left  + 'px';
     myEvent.style.height = (realEvent.end - realEvent.start) + 'px';
-    myEvent.className    = EVENT_CLASS;
+    myEvent.className    = EVENT;
 
     container.appendChild(myEvent);
   }
