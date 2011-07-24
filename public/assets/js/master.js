@@ -83,8 +83,8 @@ function addThingsToDom() {
      ,container = document.getElementById('container');
 
   for (var i = 0; i < realEvents.length; ++i) {
-    var myEvent   = document.createElement('div'),
-        realEvent = realEvents[i];
+    var myEvent   = document.createElement('div')
+       ,realEvent = realEvents[i];
 
     myEvent.style.width  = realEvent.width + 'px';
     myEvent.style.top    = realEvent.top  + 'px';
