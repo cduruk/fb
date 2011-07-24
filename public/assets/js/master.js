@@ -3,6 +3,9 @@ var input = [
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
              ,{id : 4, start : 610, end : 670}
+             // ,{id : 5, start : 610, end : 670}
+
+
             ];
 
 /**
@@ -57,7 +60,11 @@ Creates a timeline for events
  @return array
  The timeline is used to calculate how many events there are at a given
  time, each index of the array represents the minute and the value is
- the number of events at that time.
+ an object of the form {total: INTEGER, level: INTEGER}.
+
+ The total key in the object holds the number of all events at a given time.
+ The level key holds the current level at which elements can be placed
+ during the sweep across all the elements.
 
  Note that, for convenience, this array is indexed from 1, thus 720th minute
  (9PM) is on the 721th spot.
@@ -122,6 +129,8 @@ function sweepAndAssign(myEvents, timeline) {
       if (timeline[inner].level >= startLevel) {
         timeline[inner].level += 1;
       }
+
+      //Check if we need to up up a level
       if (endLevel < timeline[inner].level) {
         endLevel = timeline[inner].level;
       }
@@ -157,6 +166,7 @@ function getEventDOM(myEvent) {
   result.style.left   = myEvent.left  + 'px';
   result.style.height = (myEvent.end - myEvent.start) + 'px';
   result.className    = DOM.EVENT;
+  result.title        = 'Oh god...' + myEvent.id;
 
   var title = document.createElement('p');
   title.className = DOM.TITLE;
