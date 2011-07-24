@@ -1,9 +1,21 @@
+// var input = [
+//               {id : 1, start : 50,  end : 100}
+//              ,{id : 2, start : 70,  end : 180}
+//              ,{id : 3, start : 60,  end : 260}
+//              ,{id : 4, start : 150, end : 200}
+//              ,{id : 5, start : 190, end : 270}
+//              ,{id : 6, start : 250, end : 300}
+//             ];
+
 var input = [
               {id : 1, start : 30,  end : 150}
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
-             ,{id : 4, start : 610, end : 680}
+             ,{id : 4, start : 610, end : 670}
             ];
+
+var WIDTH       = 600
+   ,EVENT_CLASS = 'event';
 
 /**
 Lays out events for a single  day
@@ -19,16 +31,12 @@ Lays out events for a single  day
  In addition to start time, end time, and id.
 
 **/
-
-var WIDTH = 600;
-
-var myArray = new Array(721);
-for (var i = 0; i < myArray.length; ++i) {
-  myArray[i] = {total:0, rem: 0};
-}
-
-
 function layOutDay(events) {
+  var myArray = new Array(721);
+  for (var i = 0; i < myArray.length; ++i) {
+    myArray[i] = {total:0, level: 0};
+  }
+
   addEventsToArray(events, myArray);
   sweepAndAssign(events, myArray);
   return events;
@@ -45,29 +53,34 @@ function addEventsToArray(myEvents, timeline) {
 
 function sweepAndAssign(myEvents, timeline) {
   for (var i = 0; i < myEvents.length; ++i) {
-    var conflict   = 0,
-        myEvent    = myEvents[i],
-        startLevel = timeline[myEvent.start].rem;
+
+    var conflict   = 0
+       ,myEvent    = myEvents[i]
+       ,startLevel = timeline[myEvent.start].level
+       ,endLevel   = 0;
 
     for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
       if (conflict < timeline[inner].total) {
         conflict = timeline[inner].total;
       }
-      if (timeline[inner].rem === startLevel) {
-        timeline[inner].rem += 1;
+      if (timeline[inner].level >= startLevel) {
+        timeline[inner].level += 1;
+      }
+      if (endLevel < timeline[inner].level) {
+        endLevel = timeline[inner].level;
       }
     }
 
     myEvent.width = WIDTH / conflict;
-    myEvent.left  = myEvent.width * startLevel;
+    myEvent.left  = myEvent.width * (endLevel-1);
     myEvent.top   = myEvent.start;
 
   }
 }
 
 function addThingsToDom() {
-  var realEvents = layOutDay(input);
-  var container = document.getElementById('container');
+  var realEvents = layOutDay(input)
+     ,container = document.getElementById('container');
 
   for (var i = 0; i < realEvents.length; ++i) {
     var myEvent   = document.createElement('div'),
@@ -77,8 +90,8 @@ function addThingsToDom() {
     myEvent.style.top    = realEvent.top  + 'px';
     myEvent.style.left   = realEvent.left  + 'px';
     myEvent.style.height = (realEvent.end - realEvent.start) + 'px';
-    myEvent.className    = 'event';
-    myEvent.innerHTML   = 'my name is ' + realEvent.id;
+    myEvent.className    = EVENT_CLASS;
+
     container.appendChild(myEvent);
   }
 }
