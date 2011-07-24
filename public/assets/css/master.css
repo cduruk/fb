@@ -1,7 +1,8 @@
 #calendar {
+  font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+  padding-top: 20px;
   position: relative;
   width: 700px;
-  height: 720px;
 }
 
   #sidebar {
@@ -9,7 +10,24 @@
     width: 75px;
     left: 0px;
     height: 720px;
+    text-transform: uppercase;
+    margin-top: -8px;
   }
+
+    .slot {
+      height: 30px;
+      color: #b1b1b1;
+      font-size: 9px;
+      text-align: right;
+      margin-right: 5px;
+    }
+
+      .big-time {
+        font-size: 13px;
+        font-weight: bold;
+        color: #535353;
+        margin-right: 3px;
+      }
 
   #main {
     position: absolute;
@@ -18,8 +36,9 @@
 
     #container {
       width: 600px;
-      border: 1px solid #ccc;
+      border-left: 1px solid #cbcbcb;
       padding: 0 10px;
+      background-color: #e7e7e7;
     }
 
       #events {
@@ -27,7 +46,29 @@
         height: 720px;
       }
 
-      .event {
-        position: absolute;
-        border: 1px solid #ccc;
-      }
+        .event {
+          background-color: #fff;
+          position: absolute;
+          border: 1px solid #cbcbcb;
+          border-left: 4px solid #3b5898;
+        }
+
+          .event p {
+            margin: 0 0 0 10px;
+            padding: 0px;
+          }
+
+          .event p.title {
+            color: #3b5896;
+            font-size: 11px;
+            line-height: 11px;
+            font-weight: bold;
+            margin-top: 9px;
+          }
+
+          .event p.location  {
+            color: #8f8f8f;
+            font-size: 9px;
+            line-height: 9px;
+            margin-top: 4px;
+          }
