@@ -32,16 +32,17 @@ Lays out events for a single  day
 
 **/
 function layOutDay(events) {
+  var timeline = getTimeline(events);
+  return sweepAndAssign(events, timeline);
+}
+
+function getTimeline(myEvents) {
+
   var timeline = new Array(721);
   for (var i = 0; i < timeline.length; ++i) {
     timeline[i] = {total:0, level: 0};
   }
 
-  timeline = addConflicts(events, timeline);
-  return sweepAndAssign(events, timeline);
-}
-
-function addConflicts(myEvents, timeline) {
   for (var i = 0; i < myEvents.length; ++i) {
     var myEvent = myEvents[i];
     for (var inner = myEvent.start; inner <= myEvent.end; ++inner) {
