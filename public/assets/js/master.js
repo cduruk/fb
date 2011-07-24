@@ -32,23 +32,23 @@ Lays out events for a single  day
 
 **/
 function layOutDay(events) {
-  var myArray = new Array(721);
-  for (var i = 0; i < myArray.length; ++i) {
-    myArray[i] = {total:0, level: 0};
+  var timeline = new Array(721);
+  for (var i = 0; i < timeline.length; ++i) {
+    timeline[i] = {total:0, level: 0};
   }
 
-  addEventsToArray(events, myArray);
-  sweepAndAssign(events, myArray);
-  return events;
+  timeline = addConflicts(events, timeline);
+  return sweepAndAssign(events, timeline);
 }
 
-function addEventsToArray(myEvents, timeline) {
+function addConflicts(myEvents, timeline) {
   for (var i = 0; i < myEvents.length; ++i) {
     var myEvent = myEvents[i];
     for (var inner = myEvent.start; inner <= myEvent.end; ++inner) {
       timeline[inner].total += 1;
     }
   }
+  return timeline;
 }
 
 function sweepAndAssign(myEvents, timeline) {
@@ -76,6 +76,7 @@ function sweepAndAssign(myEvents, timeline) {
     myEvent.top   = myEvent.start;
 
   }
+  return myEvents;
 }
 
 function addThingsToDom() {
