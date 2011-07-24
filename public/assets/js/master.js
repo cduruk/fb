@@ -131,31 +131,31 @@ function sweepAndAssign(myEvents, timeline) {
      }
     }
 
-    var myL = 0;
+    var myL   = 0;
     var found = false;
-
     for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
-
       var levels = timeline[inner].levels;
+      if (myEvent.id == 3) console.log(levels)
+
+      if (found) {
+        break;
+      }
 
       for (var j = 0; j < levels.length; ++j) {
-        if (!found && levels[j] === false) {
-          myL = j;
-          levels[j] = true;
-          found = true;
-          if (myEvent.id === 3) console.log('here')
-        }
-      }
-
-      if (!found) {
-        levels.push(true);
-        myL = levels.length;
+        if (levels[j] === false)
+        myL = j;
         found = true;
       }
-
     }
 
-    if (myEvent.id === 3) console.log(myL);
+    if (!found) {
+      myL = timeline[myEvent.start].levels.length;
+    }
+
+    for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
+     timeline[inner].levels[myL] = true;
+    }
+
     myEvent.width = DOM.WIDTH / conflict;
     myEvent.left  = myEvent.width * (myL);
     myEvent.top   = myEvent.start;
