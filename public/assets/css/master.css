@@ -1,11 +1,33 @@
-#container {
+#calendar {
   position: relative;
+  width: 700px;
   height: 720px;
-  width: 600px;
-  border: 1px solid #ccc;
 }
 
-.event {
-  position: absolute;
-  border: 1px solid #ccc;
-}
+  #sidebar {
+    position: absolute;
+    width: 75px;
+    left: 0px;
+    height: 720px;
+  }
+
+  #main {
+    position: absolute;
+    right: 0px;
+  }
+
+    #container {
+      width: 600px;
+      border: 1px solid #ccc;
+      padding: 0 10px;
+    }
+
+      #events {
+        position: relative;
+        height: 720px;
+      }
+
+      .event {
+        position: absolute;
+        border: 1px solid #ccc;
+      }
