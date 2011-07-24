@@ -3,7 +3,8 @@ var input = [
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
              ,{id : 4, start : 610, end : 670}
-             // ,{id : 5, start : 610, end : 670}
+             ,{id : 5, start : 610, end : 670}
+             ,{id : 6, start : 610, end : 670}
 
 
             ];
@@ -21,6 +22,7 @@ var DOM = {
  ,VERTI_OFFSET : 5           // Width difference caused by borders
 }
 
+var zz;
 
 /**
   Hold all strings
@@ -46,8 +48,10 @@ Lays out events for a single  day
 **/
 function layOutDay(events) {
   events = getSortedEvents(events);
-  var timeline = getTimeline(events);
 
+
+  var timeline = getTimeline(events);
+  // console.log(timeline);
   return sweepAndAssign(events, timeline);
 }
 
@@ -76,7 +80,7 @@ function getTimeline(myEvents) {
 
   //Initialize the timeline with zero elements and zero levels
   for (var i = 0; i < timeline.length; ++i) {
-    timeline[i] = {total:0, level: 0};
+    timeline[i] = {total:0, levels: [false]};
   }
 
   // Sweep through the events and add number of events for each point in time
@@ -120,27 +124,45 @@ function sweepAndAssign(myEvents, timeline) {
        ,startLevel = timeline[myEvent.start].level
        ,endLevel   = 0;
 
-    for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
+    for (var inner = myEvent.start; inner < timeline.length; ++inner) {
+      if (timeline[inner].total == 0) break;
       if (conflict < timeline[inner].total) {
-        conflict = timeline[inner].total;
-      }
-
-      //Mark your level (from the left)
-      if (timeline[inner].level >= startLevel) {
-        timeline[inner].level += 1;
-      }
-
-      //Check if we need to up up a level
-      if (endLevel < timeline[inner].level) {
-        endLevel = timeline[inner].level;
-      }
+       conflict = timeline[inner].total;
+     }
     }
 
+    var myL = 0;
+    var found = false;
+
+    for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
+
+      var levels = timeline[inner].levels;
+
+      for (var j = 0; j < levels.length; ++j) {
+        if (!found && levels[j] === false) {
+          myL = j;
+          levels[j] = true;
+          found = true;
+          if (myEvent.id === 3) console.log('here')
+        }
+      }
+
+      if (!found) {
+        levels.push(true);
+        myL = levels.length;
+        found = true;
+      }
+
+    }
+
+    if (myEvent.id === 3) console.log(myL);
     myEvent.width = DOM.WIDTH / conflict;
-    myEvent.left  = myEvent.width * (endLevel-1);
+    myEvent.left  = myEvent.width * (myL);
     myEvent.top   = myEvent.start;
 
   }
+
+  zz = timeline;
   return myEvents;
 }
 
