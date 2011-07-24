@@ -3,7 +3,6 @@ var input = [
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
              ,{id : 4, start : 610, end : 670}
-
             ];
 
 /**
@@ -43,7 +42,9 @@ Lays out events for a single  day
 
 **/
 function layOutDay(events) {
+  events = getSortedEvents(events);
   var timeline = getTimeline(events);
+
   return sweepAndAssign(events, timeline);
 }
 
@@ -170,6 +171,29 @@ function getEventDOM(myEvent) {
 
   return result;
 }
+
+/**
+Sort the events by their start time.
+
+ @param array  events
+ An array of event objects
+
+ @return array
+ An array of event objects where events are sorted by their start time
+
+**/
+function getSortedEvents(events) {
+  return events.sort(function(event1, event2) {
+    if (event1.start < event2.start) {
+      return -1;
+    }
+    if (event1.start > event2.start) {
+     return 1;
+    }
+    return 0;
+  })
+}
+
 
 /**
  Build the calendar
