@@ -1,0 +1,11 @@
+#container {
+  position: relative;
+  height: 720px;
+  width: 600px;
+  border: 1px solid #ccc;
+}
+
+.event {
+  position: absolute;
+  border: 1px solid #ccc;
+}
