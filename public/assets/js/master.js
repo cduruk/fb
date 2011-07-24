@@ -3,8 +3,12 @@ var input = [
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
              ,{id : 4, start : 610, end : 670}
+
             ];
 
+/**
+  Hold all the DOM related constants, classes, sizes
+**/
 var DOM = {
   EVENT        : 'event'     // Class for the event
  ,EVENTS       : 'events'    // ID for the event container
@@ -15,6 +19,10 @@ var DOM = {
  ,VERTI_OFFSET : 5           // Width difference caused by borders
 }
 
+
+/**
+  Hold all strings
+**/
 var STRINGS = {
   SAMPLE_ITEM : 'Sample Item'
  ,SAMPLE_LOC  : 'Sample Location'
@@ -108,6 +116,8 @@ function sweepAndAssign(myEvents, timeline) {
       if (conflict < timeline[inner].total) {
         conflict = timeline[inner].total;
       }
+
+      //Mark your level (from the left)
       if (timeline[inner].level >= startLevel) {
         timeline[inner].level += 1;
       }

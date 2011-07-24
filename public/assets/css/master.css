@@ -8,8 +8,6 @@
   #sidebar {
     position: absolute;
     width: 75px;
-    left: 0px;
-    height: 720px;
     text-transform: uppercase;
     margin-top: -8px;
   }
@@ -51,6 +49,7 @@
           position: absolute;
           border: 1px solid #cbcbcb;
           border-left: 4px solid #3b5898;
+          overflow: auto;
         }
 
           .event p {
