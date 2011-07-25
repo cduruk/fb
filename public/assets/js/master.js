@@ -4,6 +4,9 @@ var input = [
              ,{id : 3, start : 560, end : 620}
              ,{id : 3, start : 510, end : 620}
              ,{id : 4, start : 610, end : 670}
+             ,{id : 3, start : 510, end : 620}
+             ,{id : 4, start : 610, end : 670}
+
             ];
 
 /**
@@ -194,7 +197,6 @@ function getEventDOM(myEvent) {
   result.style.left   = myEvent.left  + 'px';
   result.style.height = (myEvent.end - myEvent.start) + 'px';
   result.className    = DOM.EVENT;
-  result.title        = 'Oh god...' + myEvent.id;
 
   var title = document.createElement('p');
   title.className = DOM.TITLE;
