@@ -5,8 +5,6 @@ var input = [
              ,{id : 4, start : 610, end : 670}
              ,{id : 5, start : 610, end : 670}
              ,{id : 6, start : 610, end : 670}
-
-
             ];
 
 /**
@@ -80,14 +78,14 @@ function getTimeline(myEvents) {
 
   //Initialize the timeline with zero elements and zero levels
   for (var i = 0; i < timeline.length; ++i) {
-    timeline[i] = {total:0, levels: [false]};
+    timeline[i] = {total:0, grid: 0};
   }
 
   // Sweep through the events and add number of events for each point in time
   for (var i = 0; i < myEvents.length; ++i) {
     var myEvent = myEvents[i];
     for (var inner = myEvent.start; inner <= myEvent.end; ++inner) {
-      timeline[inner].total += 1;
+        timeline[inner].total += 1;
     }
   }
   return timeline;
@@ -117,53 +115,75 @@ The algorithm is as follows:
 
 **/
 function sweepAndAssign(myEvents, timeline) {
-  for (var i = 0; i < myEvents.length; ++i) {
+  var resultEvents = [];
 
-    var conflict   = 0
-       ,myEvent    = myEvents[i]
-       ,startLevel = timeline[myEvent.start].level
-       ,endLevel   = 0;
 
-    for (var inner = myEvent.start; inner < timeline.length; ++inner) {
-      if (timeline[inner].total == 0) break;
-      if (conflict < timeline[inner].total) {
-       conflict = timeline[inner].total;
-     }
-    }
+  for (var i = 0; i < myEvents.length; i++) {
+    var myEvent = myEvents[i];
+    var conf = getConflictCount(myEvent, timeline);
 
-    var myL   = 0;
-    var found = false;
-    for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
-      var levels = timeline[inner].levels;
-      if (myEvent.id == 3) console.log(levels)
+    for (var j = myEvent.start; j <= myEvent.end; j++) {
+      timeline[j].total = conf;
+      timeline[j].grid  = new Array(conf)
 
-      if (found) {
-        break;
+      for (var index = 0; index < timeline[j].grid.length; index++) {
+        timeline[j].grid[index] = -1;
       }
 
-      for (var j = 0; j < levels.length; ++j) {
-        if (levels[j] === false)
-        myL = j;
-        found = true;
-      }
     }
-
-    if (!found) {
-      myL = timeline[myEvent.start].levels.length;
-    }
-
-    for (var inner = myEvent.start; inner < myEvent.end; ++inner) {
-     timeline[inner].levels[myL] = true;
-    }
-
-    myEvent.width = DOM.WIDTH / conflict;
-    myEvent.left  = myEvent.width * (myL);
-    myEvent.top   = myEvent.start;
-
   }
 
+  for (var eventCount = 0; eventCount < myEvents.length; eventCount++) {
+    var myEvent = myEvents[eventCount];
+    var conf = getConflictCount(myEvent, timeline);
+
+    myEvent.width  = DOM.WIDTH / conf;
+    myEvent.height = myEvent.end-myEvent.start;
+    myEvent.top    = myEvent.start;
+
+    var level = 0;
+    var found = false;
+
+    for (var eventTime = myEvent.start; eventTime <= myEvent.end; eventTime++){
+
+      if (found) break;
+      var myGrid = timeline[eventTime].grid;
+
+      for (var index = 0; index < myGrid.length; index++) {
+       if (myGrid[index] === -1 && !found) {
+         if (myEvent.id === 3) {
+         }
+         level = index;
+         found = true;
+
+          for (var time = myEvent.start; time <= myEvent.end; time++) {
+            timeline[time].grid[level] = 1;
+          }
+          break;
+        }
+
+      }
+    }
+
+    // console.log(level);
+    myEvent.left = level * myEvent.width;
+
+    resultEvents.push(myEvent);
+  }
   zz = timeline;
-  return myEvents;
+  return resultEvents;
+
+}
+
+function getConflictCount(myEvent, timeline) {
+  var conflict = 0;
+  for (var inner = myEvent.start; inner < timeline.length; ++inner) {
+    if (timeline[inner].total == 0) break;
+    if (conflict < timeline[inner].total) {
+     conflict = timeline[inner].total;
+   }
+  }
+  return conflict;
 }
 
 /**
