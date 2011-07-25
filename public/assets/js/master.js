@@ -61,6 +61,9 @@ there are N elements  in a cluster, we divide each line on the timeline
 into N elements, and then try to place the next event into the first
 empty spot.
 
+This function the marks the part of timelines with the number of maximum
+conflicts.
+
   @param Object myEvent
   An event object
 
