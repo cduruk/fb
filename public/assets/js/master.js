@@ -2,10 +2,7 @@ var input = [
               {id : 1, start : 30,  end : 150}
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
-             ,{id : 3, start : 510, end : 620}
-             ,{id : 4, start : 610, end : 670}
-             ,{id : 3, start : 510, end : 620}
-             ,{id : 4, start : 610, end : 670}
+             ,{id : 4, start : 510, end : 620}
             ];
 
 /**
@@ -56,6 +53,22 @@ function getTimeline(myEvents) {
   return timeline;
 }
 
+/**
+Initialize the timeline and the events for further processing.
+
+The algorithm we use relies on clustering the conflicting elements. When
+there are N elements  in a cluster, we divide each line on the timeline
+into N elements, and then try to place the next event into the first
+empty spot.
+
+  @param Object myEvent
+  An event object
+
+  @param array timeline
+  The timeline
+
+  @return void
+**/
 
 function initializeEventsAndTimeline(myEvents, timeline) {
 
@@ -63,10 +76,10 @@ function initializeEventsAndTimeline(myEvents, timeline) {
     var myEvent = myEvents[i];
     myEvent.conflicts = getConflictCount(myEvent, timeline);
 
-    for (var j = myEvent.start; j <= myEvent.end; j++) {
-      timeline[j].grid  = new Array(myEvent.conflicts);
-      for (var index = 0; index < timeline[j].grid.length; index++) {
-        timeline[j].grid[index] = -1;
+    for (var time = myEvent.start; time <= myEvent.end; time++) {
+      timeline[time].grid  = new Array(myEvent.conflicts);
+      for (var index = 0; index < timeline[time].grid.length; index++) {
+        timeline[time].grid[index] = -1;
       }
     }
 
@@ -76,6 +89,25 @@ function initializeEventsAndTimeline(myEvents, timeline) {
 
 /**
 Sweeps through the events and assings them width, left, and top values.
+
+The main algorithm relies on the idea that all conflicting elements need
+to have the same width and we try to place the elements leftmost as possible.
+
+Whenever we see a group of elements conflicting, we find the maximum number of
+conflicts and then divide the each line on the timeline into that number
+of conflicts. After that, we try to place the elements using that grid, when
+an element is placed on a spot on that grid, we mark all the lines on the
+timeline on that level as taken.
+
+  @param Object myEvent
+  An event object
+
+  @param array timeline
+  The timeline
+
+  @return array
+  An array of events where events are assigned a top, width, and a left
+  value
 
 **/
 function sweepAndAssign(myEvents, timeline) {
@@ -90,32 +122,69 @@ function sweepAndAssign(myEvents, timeline) {
     myEvent.height = myEvent.end-myEvent.start;
     myEvent.top    = myEvent.start;
 
-    var level = 0;
-    var found = false;
-
-    for (var eTime = myEvent.start; eTime <= myEvent.end; eTime++) {
-
-      if (found) break;
-      var myGrid = timeline[eTime].grid;
-
-      for (var index = 0; index < myGrid.length; index++) {
-       if (myGrid[index] === -1 && !found) {
-         level = index;
-         found = true;
-          for (var time = myEvent.start; time <= myEvent.end; time++) {
-            timeline[time].grid[level] = 1;
-          }
-          break;
-        }
-      }
-    }
-
-    myEvent.left = level * myEvent.width;
+    myEvent.left = getLevelForEvent(myEvent, timeline) * myEvent.width;
     resultEvents.push(myEvent);
   }
   return resultEvents;
 }
 
+/**
+Get the level, horizontally, for this event..
+
+  @param Object myEvent
+  An event object
+
+  @param array timeline
+  The timeline
+
+  @return integer
+  Return the level this event should be placed in
+**/
+function getLevelForEvent(myEvent, timeline) {
+
+  var level = 0;
+  var found = false;
+
+  for (var eTime = myEvent.start; eTime <= myEvent.end; eTime++) {
+
+    if (found) {
+      break;
+    }
+
+    var myGrid = timeline[eTime].grid;
+    for (var index = 0; index < myGrid.length; index++) {
+
+      //See if there is any spot on that grid on this line.
+      if (myGrid[index] === -1 && !found) {
+        level = index;
+        found = true;
+
+         //Placed an element. Now mark those spots as taken
+         //on all lines this element is in.
+         for (var time = myEvent.start; time <= myEvent.end; time++) {
+           timeline[time].grid[level] = 1;
+         }
+         break;
+       }
+    }
+  }
+
+  return level;
+}
+
+/**
+ Return the max number of conflicts this event ever experiences
+
+ @param Object myEvent
+ An event object
+
+ @param array timeline
+ The timeline
+
+ @return HTMLElement
+ Return a DOM element representing that event
+
+**/
 function getConflictCount(myEvent, timeline) {
   var conflict = 0;
   for (var inner = myEvent.start; inner < timeline.length; ++inner) {
@@ -200,4 +269,4 @@ function buildCalendar() {
   }
 }
 
-buildCalendar();
+window.onload = buildCalendar();
