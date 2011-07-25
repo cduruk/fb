@@ -43,14 +43,14 @@ function getTimeline(myEvents) {
 
   //Initialize the timeline with zero elements and zero levels
   for (var i = 0; i < timeline.length; ++i) {
-    timeline[i] = {total:0, grid: 0};
+    timeline[i] = {grid: []};
   }
 
   // Sweep through the events and add number of events for each point in time
   for (var i = 0; i < myEvents.length; ++i) {
     var myEvent = myEvents[i];
     for (var inner = myEvent.start; inner <= myEvent.end; ++inner) {
-        timeline[inner].total += 1;
+        timeline[inner].grid.push(-1);
     }
   }
   return timeline;
@@ -119,9 +119,9 @@ function sweepAndAssign(myEvents, timeline) {
 function getConflictCount(myEvent, timeline) {
   var conflict = 0;
   for (var inner = myEvent.start; inner < timeline.length; ++inner) {
-    if (timeline[inner].total == 0) break;
-    if (conflict < timeline[inner].total) {
-     conflict = timeline[inner].total;
+    if (timeline[inner].grid.length == 0) break;
+    if (conflict < timeline[inner].grid.length) {
+     conflict = timeline[inner].grid.length;
    }
   }
   return conflict;
