@@ -2,9 +2,8 @@ var input = [
               {id : 1, start : 30,  end : 150}
              ,{id : 2, start : 540, end : 600}
              ,{id : 3, start : 560, end : 620}
+             ,{id : 3, start : 510, end : 620}
              ,{id : 4, start : 610, end : 670}
-             ,{id : 5, start : 610, end : 670}
-             ,{id : 6, start : 610, end : 670}
             ];
 
 /**
@@ -19,8 +18,6 @@ var DOM = {
  ,HORIZ_OFFSET : 2           // The height difference caused by borders
  ,VERTI_OFFSET : 5           // Width difference caused by borders
 }
-
-var zz;
 
 /**
   Hold all strings
@@ -49,7 +46,6 @@ function layOutDay(events) {
 
 
   var timeline = getTimeline(events);
-  // console.log(timeline);
   return sweepAndAssign(events, timeline);
 }
 
@@ -120,57 +116,47 @@ function sweepAndAssign(myEvents, timeline) {
 
   for (var i = 0; i < myEvents.length; i++) {
     var myEvent = myEvents[i];
-    var conf = getConflictCount(myEvent, timeline);
+
+    myEvent.conflicts = getConflictCount(myEvent, timeline);
 
     for (var j = myEvent.start; j <= myEvent.end; j++) {
-      timeline[j].total = conf;
-      timeline[j].grid  = new Array(conf)
-
+      timeline[j].grid  = new Array(myEvent.conflicts)
       for (var index = 0; index < timeline[j].grid.length; index++) {
         timeline[j].grid[index] = -1;
       }
-
     }
   }
 
   for (var eventCount = 0; eventCount < myEvents.length; eventCount++) {
     var myEvent = myEvents[eventCount];
-    var conf = getConflictCount(myEvent, timeline);
 
-    myEvent.width  = DOM.WIDTH / conf;
+    myEvent.width  = DOM.WIDTH / myEvent.conflicts;
     myEvent.height = myEvent.end-myEvent.start;
     myEvent.top    = myEvent.start;
 
     var level = 0;
     var found = false;
 
-    for (var eventTime = myEvent.start; eventTime <= myEvent.end; eventTime++){
+    for (var eTime = myEvent.start; eTime <= myEvent.end; eTime++) {
 
       if (found) break;
-      var myGrid = timeline[eventTime].grid;
+      var myGrid = timeline[eTime].grid;
 
       for (var index = 0; index < myGrid.length; index++) {
        if (myGrid[index] === -1 && !found) {
-         if (myEvent.id === 3) {
-         }
          level = index;
          found = true;
-
           for (var time = myEvent.start; time <= myEvent.end; time++) {
             timeline[time].grid[level] = 1;
           }
           break;
         }
-
       }
     }
 
-    // console.log(level);
     myEvent.left = level * myEvent.width;
-
     resultEvents.push(myEvent);
   }
-  zz = timeline;
   return resultEvents;
 
 }
