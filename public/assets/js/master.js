@@ -57,6 +57,23 @@ function getTimeline(myEvents) {
 }
 
 
+function initializeEventsAndTimeline(myEvents, timeline) {
+
+  for (var i = 0; i < myEvents.length; i++) {
+    var myEvent = myEvents[i];
+    myEvent.conflicts = getConflictCount(myEvent, timeline);
+
+    for (var j = myEvent.start; j <= myEvent.end; j++) {
+      timeline[j].grid  = new Array(myEvent.conflicts);
+      for (var index = 0; index < timeline[j].grid.length; index++) {
+        timeline[j].grid[index] = -1;
+      }
+    }
+
+  }
+
+}
+
 /**
 Sweeps through the events and assings them width, left, and top values.
 
@@ -64,18 +81,7 @@ Sweeps through the events and assings them width, left, and top values.
 function sweepAndAssign(myEvents, timeline) {
   var resultEvents = [];
 
-  for (var i = 0; i < myEvents.length; i++) {
-    var myEvent = myEvents[i];
-
-    myEvent.conflicts = getConflictCount(myEvent, timeline);
-
-    for (var j = myEvent.start; j <= myEvent.end; j++) {
-      timeline[j].grid  = new Array(myEvent.conflicts)
-      for (var index = 0; index < timeline[j].grid.length; index++) {
-        timeline[j].grid[index] = -1;
-      }
-    }
-  }
+  initializeEventsAndTimeline(myEvents, timeline);
 
   for (var eventCount = 0; eventCount < myEvents.length; eventCount++) {
     var myEvent = myEvents[eventCount];
@@ -108,7 +114,6 @@ function sweepAndAssign(myEvents, timeline) {
     resultEvents.push(myEvent);
   }
   return resultEvents;
-
 }
 
 function getConflictCount(myEvent, timeline) {
