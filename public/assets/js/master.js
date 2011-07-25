@@ -6,7 +6,6 @@ var input = [
              ,{id : 4, start : 610, end : 670}
              ,{id : 3, start : 510, end : 620}
              ,{id : 4, start : 610, end : 670}
-
             ];
 
 /**
@@ -30,47 +29,14 @@ var STRINGS = {
  ,SAMPLE_LOC  : 'Sample Location'
 }
 
-/**
-Lays out events for a single  day
-
- @param array  events
- An array of event objects. Each event object consists of a start time, end
- Time (measured in minutes) from 9am, as well as a unique id. The
- Start and end time of each event will be [0, 720]. The start time will
- Be less than the end time.  The array is not sorted.
-
- @return array
- An array of event objects that has the width, the left and top positions set,
- In addition to start time, end time, and id.
-
-**/
 function layOutDay(events) {
   events = getSortedEvents(events);
-
 
   var timeline = getTimeline(events);
   return sweepAndAssign(events, timeline);
 }
 
-/**
-Creates a timeline for events
 
- @param array myEvents
- An array of event objects.
-
- @return array
- The timeline is used to calculate how many events there are at a given
- time, each index of the array represents the minute and the value is
- an object of the form {total: INTEGER, level: INTEGER}.
-
- The total key in the object holds the number of all events at a given time.
- The level key holds the current level at which elements can be placed
- during the sweep across all the elements.
-
- Note that, for convenience, this array is indexed from 1, thus 720th minute
- (9PM) is on the 721th spot.
-
-**/
 function getTimeline(myEvents) {
 
   var timeline = new Array(721);
@@ -94,28 +60,9 @@ function getTimeline(myEvents) {
 /**
 Sweeps through the events and assings them width, left, and top values.
 
-The algorithm is as follows:
-  * Calculate the width where width is the maximum allowed width divided by
-    the highest number of events during that events' lifetime.
-  * Calculate the vertical location. For this, we place an element on the
-    as left as possible and then mark those spots on the timeline as taken by
-    increasing the level count.
-
- @param array myEvents
- An array of event objects.
-
- @param array timeline
- An array representing the daily timeline where the index is the minue count
- and value is the number of events at that time.
-
- @return array
- Return an array objects where, in addition to their existing values, events
- are also assigned width, left, and top values.
-
 **/
 function sweepAndAssign(myEvents, timeline) {
   var resultEvents = [];
-
 
   for (var i = 0; i < myEvents.length; i++) {
     var myEvent = myEvents[i];
